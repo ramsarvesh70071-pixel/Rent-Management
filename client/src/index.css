@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-typewriter: 'Courier Prime', 'Courier New', Courier, monospace;
+  }
+}
+
+.font-typewriter {
+  font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* PRINT CSS SPECIFICATION */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 12mm;
+  }
+
+  /* Reset body and html */
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    font-size: 13pt;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide entire screen UI */
+  .no-print,
+  nav,
+  header,
+  footer,
+  aside,
+  button,
+  .toast-container,
+  #modal-backdrop {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-sheet,
+  #printable-sheet * {
+    visibility: visible;
+  }
+
+  #printable-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .print-receipt-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-cut-divider {
+    border-top: 1.5px dashed #666666 !important;
+    margin: 20px 0 !important;
+  }
+}
