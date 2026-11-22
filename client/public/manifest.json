@@ -1,0 +1,18 @@
+{
+  "name": "Rent Receipt Generator",
+  "short_name": "RentReceipt",
+  "description": "Production-ready MERN Rent Receipt Generator with A4 duplicate printing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#1c1917",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

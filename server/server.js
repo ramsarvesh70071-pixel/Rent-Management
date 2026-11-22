@@ -102,8 +102,12 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, async () => {
-  console.log(`Rent Receipt Server running on port ${PORT}`);
-  await seedDefaults();
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    console.log(`Rent Receipt Server running on port ${PORT}`);
+    await seedDefaults();
+  });
+}
+
+module.exports = app;
 

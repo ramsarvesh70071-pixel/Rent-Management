@@ -3,11 +3,47 @@
 @layer base {
   :root {
     --font-typewriter: 'Courier Prime', 'Courier New', Courier, monospace;
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+
+  /* Prevent automatic text scaling on orientation change on iOS */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
+  /* Prevent iOS zoom on input focus by guaranteeing at least 16px font on small screens */
+  @media (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
   }
 }
 
 .font-typewriter {
   font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+
+/* Touch manipulation */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Safe area utilities */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 8px);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+.pb-bottom-nav {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Custom Scrollbar */
@@ -26,7 +62,7 @@
   background: #a8a8a8;
 }
 
-/* PRINT CSS SPECIFICATION */
+/* PRINT CSS SPECIFICATION - PRESERVED 1:1 */
 @media print {
   @page {
     size: A4 portrait;
@@ -53,7 +89,9 @@
   aside,
   button,
   .toast-container,
-  #modal-backdrop {
+  #modal-backdrop,
+  .mobile-bottom-nav,
+  .mobile-sticky-action {
     display: none !important;
   }
 

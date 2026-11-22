@@ -364,8 +364,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col font-sans">
-      {/* Navigation Header */}
+    <div className="min-h-dvh bg-stone-50 flex flex-col font-sans">
+      {/* Navigation Header & Mobile Bottom Bar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -374,10 +374,10 @@ export default function App() {
         onNewReceipt={handleNewReceipt}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print">
+      {/* Main Container with safe bottom padding on mobile */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 pt-3 sm:pt-4 md:pt-6 pb-24 md:pb-8 no-print">
         {activeTab === 'generate' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
             {/* Form Column */}
             <div className="lg:col-span-7">
               <ReceiptForm
@@ -401,26 +401,26 @@ export default function App() {
 
             {/* Quick Live Preview Column: Single Receipt View */}
             <div className="lg:col-span-5 space-y-4">
-              <div className="bg-white rounded-lg border border-stone-200 shadow-sm p-4">
+              <div className="bg-white rounded-xl md:rounded-2xl border border-stone-200 shadow-sm p-4 sm:p-5">
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-stone-200">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-stone-700">
-                      Live Receipt Preview (Single View)
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
+                      Live Preview
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handlePreview}
-                    className="text-xs text-stone-600 hover:text-black font-semibold underline cursor-pointer"
+                    className="text-xs text-stone-600 hover:text-black font-semibold underline cursor-pointer min-h-[44px] flex items-center px-2 py-1 touch-manipulation"
                   >
-                    Expand / A4 Double View
+                    A4 Double Copy View
                   </button>
                 </div>
 
-                {/* Render live single receipt view */}
-                <div className="border border-stone-200 rounded p-2 bg-stone-50 overflow-x-auto">
-                  <div className="scale-95 origin-top">
+                {/* Render live single receipt view with mobile scale protection */}
+                <div className="border border-stone-200 rounded-xl p-2 sm:p-3 bg-stone-50 overflow-hidden">
+                  <div className="overflow-x-auto">
                     <SingleReceiptView receipt={formData} type="owner" />
                   </div>
                 </div>

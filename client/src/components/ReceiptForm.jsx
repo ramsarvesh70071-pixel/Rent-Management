@@ -9,11 +9,10 @@ import {
   Sparkles,
   Building2,
   Building,
-  Calendar,
-  DollarSign,
   MapPin,
-  CheckCircle,
   Filter,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export default function ReceiptForm({
@@ -32,26 +31,26 @@ export default function ReceiptForm({
 }) {
   const [isEditingWords, setIsEditingWords] = useState(false);
   const [filterTenantsByProperty, setFilterTenantsByProperty] = useState(false);
+  const [isPropertyDetailsOpen, setIsPropertyDetailsOpen] = useState(false);
 
   // Available properties from settings
-  const properties = settings?.properties && settings?.properties.length > 0
-    ? settings.properties
-    : [
-        {
-          name: 'BUXIPUR SHER KOTHI',
-          address: settings?.propertyAddress || 'BUXIPUR SHER KOTHI, GORAKHPUR',
-          defaultShopNumber: settings?.defaultShopNumber || 'Second floor portion',
-          ownerName: settings?.ownerName || 'SRI KIRTI AGRAWAL',
-          ownerFatherName: settings?.ownerFatherName || 'LATE SRI SATYA PRAKASH AGRAWAL',
-          isDefault: true,
-        },
-      ];
+  const properties =
+    settings?.properties && settings?.properties.length > 0
+      ? settings.properties
+      : [
+          {
+            name: 'BUXIPUR SHER KOTHI',
+            address: settings?.propertyAddress || 'BUXIPUR SHER KOTHI, GORAKHPUR',
+            defaultShopNumber: settings?.defaultShopNumber || 'Second floor portion',
+            ownerName: settings?.ownerName || 'SRI KIRTI AGRAWAL',
+            ownerFatherName: settings?.ownerFatherName || 'LATE SRI SATYA PRAKASH AGRAWAL',
+            isDefault: true,
+          },
+        ];
 
   // Active property object
   const currentProp =
-    selectedProperty ||
-    properties.find((p) => p.isDefault) ||
-    properties[0];
+    selectedProperty || properties.find((p) => p.isDefault) || properties[0];
 
   // Generate dynamic 12 months with current year first, plus adjacent years
   const currentYear = new Date().getFullYear();
@@ -79,13 +78,14 @@ export default function ReceiptForm({
   };
 
   // Filtered customers based on current property if toggle is enabled
-  const displayedCustomers = filterTenantsByProperty && currentProp
-    ? customers.filter(
-        (c) =>
-          !c.propertyName ||
-          c.propertyName.toUpperCase() === currentProp.name.toUpperCase()
-      )
-    : customers;
+  const displayedCustomers =
+    filterTenantsByProperty && currentProp
+      ? customers.filter(
+          (c) =>
+            !c.propertyName ||
+            c.propertyName.toUpperCase() === currentProp.name.toUpperCase()
+        )
+      : customers;
 
   // Select customer from dropdown: automatically fill all customer data dynamically
   const handleSelectCustomer = (cust) => {
@@ -97,7 +97,10 @@ export default function ReceiptForm({
         customerFatherName: '',
         amount: '',
         amountInWords: '',
-        shopNumber: currentProp?.defaultShopNumber || settings?.defaultShopNumber || 'Second floor portion',
+        shopNumber:
+          currentProp?.defaultShopNumber ||
+          settings?.defaultShopNumber ||
+          'Second floor portion',
       }));
       return;
     }
@@ -117,7 +120,6 @@ export default function ReceiptForm({
       shopNumber: shopVal,
       amount: rentVal,
       amountInWords: rentWords,
-      // If customer is explicitly assigned to a property and user hasn't switched yet
       ...(cust.propertyName
         ? {
             propertyName: cust.propertyName,
@@ -127,54 +129,55 @@ export default function ReceiptForm({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-stone-200 shadow-sm p-5 sm:p-7">
-      <div className="flex items-center justify-between pb-4 mb-5 border-b border-stone-200">
-        <div>
-          <h2 className="text-lg font-semibold text-stone-900 tracking-tight">
+    <div className="bg-white rounded-xl md:rounded-2xl border border-stone-200 shadow-sm p-4 sm:p-6 md:p-7">
+      {/* Top Header Card */}
+      <div className="flex items-center justify-between pb-4 mb-4 sm:mb-6 border-b border-stone-200">
+        <div className="min-w-0 pr-2">
+          <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight leading-tight">
             Generate Rent Receipt
           </h2>
-          <p className="text-xs text-stone-500 font-mono mt-0.5">
-            Select property filter, tenant, or enter details to preview & print duplicate receipts
+          <p className="text-xs text-stone-500 font-mono mt-0.5 truncate">
+            Fill tenant details to preview and print duplicate copies
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-stone-600 bg-stone-100 border border-stone-200 px-2.5 py-1 rounded">
-            Receipt: <strong className="text-stone-900">#{formData.receiptNumber || '00015'}</strong>
+        <div className="shrink-0">
+          <span className="inline-flex items-center gap-1 text-xs font-mono font-medium text-stone-700 bg-stone-100 border border-stone-200 px-2.5 py-1 rounded-md">
+            Receipt: <strong className="text-stone-950 font-bold">#{formData.receiptNumber || '00015'}</strong>
           </span>
         </div>
       </div>
 
-      {/* Property Filter Bar */}
-      <div className="bg-stone-50 border border-stone-200 rounded-lg p-3.5 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      {/* Property Filter Banner Card */}
+      <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 sm:p-4 mb-5 sm:mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-stone-900 flex items-center justify-center text-white shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-stone-900 flex items-center justify-center text-white shrink-0">
               <Building2 className="w-4 h-4" />
             </div>
-            <div>
-              <label htmlFor="property-filter" className="block text-xs font-bold uppercase tracking-wider text-stone-900 flex items-center gap-1.5">
-                <span>Property Filter</span>
-                <span className="text-[10px] bg-stone-200 text-stone-700 px-1.5 py-0.2 rounded font-mono font-normal">
-                  {properties.length} available
-                </span>
+            <div className="min-w-0">
+              <label
+                htmlFor="property-filter"
+                className="block text-xs font-bold uppercase tracking-wider text-stone-900"
+              >
+                Property / Location
               </label>
-              <p className="text-[11px] text-stone-500">
-                Switch property to auto-fill address, portion, and owner header
+              <p className="text-[11px] text-stone-500 truncate">
+                Switches address & owner header
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-row items-center gap-2 w-full sm:w-auto min-w-0">
             <select
               id="property-filter"
               value={currentProp?.name || ''}
               onChange={(e) => handlePropertyFilterChange(e.target.value)}
-              className="flex-1 sm:w-80 px-3 py-2 text-xs font-semibold uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800 cursor-pointer shadow-2xs text-stone-900"
+              className="flex-1 min-w-0 sm:w-72 px-3 py-2.5 sm:py-2 text-sm sm:text-xs font-semibold uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 cursor-pointer shadow-xs text-stone-900 min-h-[44px]"
             >
               {properties.map((prop, idx) => (
                 <option key={prop._id || idx} value={prop.name}>
-                  {prop.name} {prop.isDefault ? '★ (Default)' : ''} — {prop.address}
+                  {prop.name} {prop.isDefault ? '★ (Default)' : ''}
                 </option>
               ))}
             </select>
@@ -182,8 +185,8 @@ export default function ReceiptForm({
               <button
                 type="button"
                 onClick={onNavigateToSettings}
-                className="text-xs text-stone-700 hover:text-black font-semibold bg-white border border-stone-200 hover:border-stone-400 px-2.5 py-2 rounded-md shadow-2xs whitespace-nowrap cursor-pointer transition-colors"
-                title="Add or manage properties in Settings"
+                className="shrink-0 text-xs text-stone-700 hover:text-black font-semibold bg-white border border-stone-200 hover:border-stone-400 active:bg-stone-100 px-3 py-2 rounded-lg shadow-xs whitespace-nowrap cursor-pointer transition-colors min-h-[44px] flex items-center justify-center touch-manipulation"
+                title="Manage properties in Settings"
               >
                 + Manage
               </button>
@@ -191,17 +194,18 @@ export default function ReceiptForm({
           </div>
         </div>
 
-        {/* Selected Property Details Strip */}
+        {/* Selected Property Details */}
         {currentProp && (
-          <div className="mt-2.5 pt-2.5 border-t border-stone-200/80 flex flex-wrap items-center justify-between text-xs text-stone-600 gap-2">
-            <div className="flex items-center gap-1.5 truncate">
+          <div className="mt-2.5 pt-2 border-t border-stone-200/80 flex flex-wrap items-center justify-between text-xs text-stone-600 gap-1.5">
+            <div className="flex items-center gap-1.5 truncate min-w-0">
               <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span className="font-semibold text-stone-800 uppercase">{currentProp.name}:</span>
+              <span className="font-semibold text-stone-900 uppercase truncate">
+                {currentProp.name}:
+              </span>
               <span className="text-stone-600 truncate">{currentProp.address}</span>
             </div>
-            <div className="flex items-center gap-3 font-mono text-[11px] text-stone-500">
-              <span>Portion: <strong className="text-stone-800">{currentProp.defaultShopNumber || 'Second floor portion'}</strong></span>
-              <span>Owner: <strong className="text-stone-800">{currentProp.ownerName || settings?.ownerName}</strong></span>
+            <div className="text-[11px] font-mono text-stone-500">
+              Portion: <strong className="text-stone-800">{currentProp.defaultShopNumber || 'Second floor portion'}</strong>
             </div>
           </div>
         )}
@@ -212,24 +216,24 @@ export default function ReceiptForm({
           e.preventDefault();
           onPreview();
         }}
-        className="space-y-6"
+        className="space-y-5 sm:space-y-6"
       >
         {/* Section 1: Customer Details */}
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-xs font-bold uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
-              <span>1. Customer / Tenant Details</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1">
+              <span>1. Tenant Details</span>
               <span className="text-rose-500">*</span>
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {currentProp && (
                 <button
                   type="button"
                   onClick={() => setFilterTenantsByProperty(!filterTenantsByProperty)}
-                  className="text-[11px] text-stone-500 hover:text-stone-900 underline flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-3 py-2 rounded-lg transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] touch-manipulation"
                 >
-                  <Filter className="w-3 h-3" />
-                  <span>
+                  <Filter className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">
                     {filterTenantsByProperty
                       ? `Filter: ${currentProp.name} (${displayedCustomers.length})`
                       : 'Filter by Property'}
@@ -239,19 +243,19 @@ export default function ReceiptForm({
               <button
                 type="button"
                 onClick={onOpenCustomerModal}
-                className="text-xs text-stone-800 hover:text-black font-medium flex items-center gap-1 hover:underline cursor-pointer"
+                className="text-xs font-semibold text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-3 py-2 rounded-lg transition-colors flex items-center gap-1 cursor-pointer min-h-[44px] touch-manipulation shrink-0"
               >
-                <UserPlus className="w-3.5 h-3.5" />
-                <span>+ Add New Customer</span>
+                <UserPlus className="w-3.5 h-3.5 text-stone-700 shrink-0" />
+                <span>+ Add Tenant</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {/* Quick Customer Dropdown */}
             <div>
               <label className="block text-xs font-medium text-stone-600 mb-1">
-                Select Saved Customer {filterTenantsByProperty ? `(for ${currentProp?.name})` : ''}
+                Select Saved Tenant
               </label>
               <select
                 value={formData.customerId || ''}
@@ -266,34 +270,35 @@ export default function ReceiptForm({
                     handleSelectCustomer(selected);
                   }
                 }}
-                className="w-full px-3 py-2 text-sm bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
+                className="w-full px-3 py-2.5 text-base sm:text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
               >
-                <option value="">-- Select Saved Customer --</option>
+                <option value="">-- Select Saved Tenant --</option>
                 {displayedCustomers.map((c) => (
                   <option key={c._id} value={c._id}>
                     {c.name} {c.defaultShopNumber ? `(${c.defaultShopNumber})` : ''}{' '}
-                    {c.propertyName ? `[${c.propertyName}]` : ''}{' '}
                     {c.defaultAmount ? `- ₹${c.defaultAmount}` : ''}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Customer Name Input (Editable & Dynamic) */}
+            {/* Customer Name Input */}
             <div>
               <label className="block text-xs font-medium text-stone-600 mb-1">
-                Customer Name <span className="text-rose-500">*</span>
+                Customer / Tenant Name <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder="Select from dropdown or type customer name..."
+                placeholder="Type name or select above..."
                 value={formData.customerName}
                 onChange={(e) => {
                   const val = e.target.value.toUpperCase();
                   setFormData((prev) => ({ ...prev, customerName: val }));
                 }}
                 required
-                className="w-full px-3 py-2 text-sm uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800 font-semibold"
+                autoComplete="off"
+                enterKeyHint="next"
+                className="w-full px-3 py-2.5 text-base sm:text-sm uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 font-semibold min-h-[48px] touch-manipulation"
               />
             </div>
           </div>
@@ -301,32 +306,36 @@ export default function ReceiptForm({
 
         {/* Section 2: Payment & Date Information */}
         <div className="pt-2 border-t border-stone-100">
-          <label className="text-xs font-bold uppercase tracking-wider text-stone-700 block mb-3">
+          <label className="text-xs font-bold uppercase tracking-wider text-stone-800 block mb-2">
             2. Payment & Date Details
           </label>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {/* Rent Amount */}
             <div>
               <label className="block text-xs font-medium text-stone-600 mb-1">
                 Rent Amount (₹) <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-2 text-sm text-stone-400 font-mono">₹</span>
+                <span className="absolute left-3.5 top-3 text-base sm:text-sm text-stone-400 font-mono font-bold">
+                  ₹
+                </span>
                 <input
                   type="number"
                   min="1"
                   step="1"
+                  inputMode="numeric"
                   placeholder="7500"
                   value={formData.amount}
                   onChange={handleAmountChange}
                   required
-                  className="w-full pl-7 pr-3 py-2 text-sm font-semibold bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
+                  enterKeyHint="next"
+                  className="w-full pl-8 pr-3 py-2.5 text-base sm:text-sm font-bold bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
                 />
               </div>
             </div>
 
-            {/* Rent Month Dropdown with all 12 Months */}
+            {/* Rent Month Dropdown */}
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs font-medium text-stone-600">
@@ -337,7 +346,7 @@ export default function ReceiptForm({
                   onClick={() =>
                     setFormData((prev) => ({ ...prev, rentMonth: getCurrentMonthYear() }))
                   }
-                  className="text-[10px] text-stone-500 hover:text-stone-900 underline cursor-pointer"
+                  className="text-xs text-stone-700 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-2.5 py-1 rounded-md font-medium cursor-pointer touch-manipulation min-h-[44px] flex items-center"
                 >
                   Current
                 </button>
@@ -346,7 +355,7 @@ export default function ReceiptForm({
                 value={formData.rentMonth}
                 onChange={(e) => setFormData((prev) => ({ ...prev, rentMonth: e.target.value }))}
                 required
-                className="w-full px-3 py-2 text-sm uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800 font-medium"
+                className="w-full px-3 py-2.5 text-base sm:text-sm uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 font-medium min-h-[48px] touch-manipulation"
               >
                 {years.map((yr) => (
                   <optgroup key={yr} label={`Year ${yr}`}>
@@ -371,7 +380,7 @@ export default function ReceiptForm({
                   onClick={() =>
                     setFormData((prev) => ({ ...prev, receiptDate: getTodayISODate() }))
                   }
-                  className="text-[10px] text-stone-500 hover:text-stone-900 underline cursor-pointer"
+                  className="text-xs text-stone-700 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-2.5 py-1 rounded-md font-medium cursor-pointer touch-manipulation min-h-[44px] flex items-center"
                 >
                   Today
                 </button>
@@ -381,17 +390,17 @@ export default function ReceiptForm({
                 value={formData.receiptDate}
                 onChange={(e) => setFormData((prev) => ({ ...prev, receiptDate: e.target.value }))}
                 required
-                className="w-full px-3 py-2 text-sm bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
+                className="w-full px-3 py-2.5 text-base sm:text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
               />
             </div>
           </div>
 
           {/* Amount in Words */}
-          <div className="mt-4">
+          <div className="mt-3.5">
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-medium text-stone-600 flex items-center gap-1.5">
+              <label className="block text-xs font-medium text-stone-700 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>The Sum of Rupees (Amount in Words)</span>
+                <span>Sum in Words (Automatic)</span>
               </label>
               <button
                 type="button"
@@ -401,9 +410,9 @@ export default function ReceiptForm({
                   }
                   setIsEditingWords(!isEditingWords);
                 }}
-                className="text-[11px] text-stone-500 hover:text-stone-800 underline cursor-pointer"
+                className="text-xs text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-2.5 py-1 rounded-md cursor-pointer touch-manipulation min-h-[44px] flex items-center font-medium"
               >
-                {isEditingWords ? 'Reset to Auto Convert' : 'Edit Words Manually'}
+                {isEditingWords ? 'Auto Convert' : 'Edit Manually'}
               </button>
             </div>
             <input
@@ -415,116 +424,128 @@ export default function ReceiptForm({
               }
               placeholder="e.g. SEVEN THOUSAND FIVE HUNDRED ONLY"
               required
-              className={`w-full px-3 py-2 text-sm font-typewriter uppercase tracking-wide rounded-md border ${
+              className={`w-full px-3 py-2.5 text-sm sm:text-base font-typewriter uppercase tracking-wide rounded-lg border min-h-[48px] touch-manipulation ${
                 isEditingWords
-                  ? 'border-amber-400 bg-amber-50/20 focus:ring-1 focus:ring-amber-500 focus:outline-none'
+                  ? 'border-amber-400 bg-amber-50/20 focus:ring-2 focus:ring-amber-500 focus:outline-none'
                   : 'border-stone-200 bg-stone-50 text-stone-800 select-all'
               }`}
             />
           </div>
         </div>
 
-        {/* Section 3: Property & Owner Details */}
+        {/* Section 3: Property & Owner Details (Collapsible on mobile) */}
         <div className="pt-2 border-t border-stone-100">
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-xs font-bold uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
-              <Building className="w-3.5 h-3.5 text-stone-500" />
-              <span>3. Property & Owner Specifications</span>
-            </label>
-            <span className="text-[11px] text-emerald-700 font-medium">
-              {currentProp ? `Linked to: ${currentProp.name}` : 'Configured from Settings'}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-stone-600 mb-1">
-                Property / Shop Number
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Second floor portion"
-                value={formData.shopNumber}
-                onChange={(e) => setFormData((prev) => ({ ...prev, shopNumber: e.target.value }))}
-                className="w-full px-3 py-2 text-sm bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
-              />
+          <button
+            type="button"
+            onClick={() => setIsPropertyDetailsOpen(!isPropertyDetailsOpen)}
+            className="w-full flex items-center justify-between py-2 text-left cursor-pointer min-h-[44px] touch-manipulation"
+          >
+            <div className="flex items-center gap-1.5">
+              <Building className="w-4 h-4 text-stone-600" />
+              <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
+                3. Property & Owner Specifications
+              </span>
             </div>
-
-            <div>
-              <label className="block text-xs font-medium text-stone-600 mb-1">
-                Property Address (IN ...)
-              </label>
-              <input
-                type="text"
-                placeholder="BUXIPUR  SHER KOTHI, GORAKHPUR"
-                value={formData.propertyAddress}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, propertyAddress: e.target.value }))
-                }
-                className="w-full px-3 py-2 text-sm uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
-              />
+            <div className="flex items-center gap-1 text-xs text-stone-500 font-medium">
+              <span className="hidden sm:inline">
+                {currentProp ? currentProp.name : 'Configured Defaults'}
+              </span>
+              {isPropertyDetailsOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </div>
+          </button>
 
-            <div>
-              <label className="block text-xs font-medium text-stone-600 mb-1">
-                Owner Name
-              </label>
-              <input
-                type="text"
-                placeholder="SRI KIRTI AGRAWAL"
-                value={formData.ownerName}
-                onChange={(e) => setFormData((prev) => ({ ...prev, ownerName: e.target.value }))}
-                className="w-full px-3 py-2 text-sm uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
-              />
-            </div>
+          {/* Form fields: Open by default on desktop, collapsible on mobile */}
+          <div className={`${isPropertyDetailsOpen ? 'block' : 'hidden md:block'} mt-2 space-y-3`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label className="block text-xs font-medium text-stone-600 mb-1">
+                  Property / Shop Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Second floor portion"
+                  value={formData.shopNumber}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, shopNumber: e.target.value }))}
+                  className="w-full px-3 py-2.5 text-base sm:text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-medium text-stone-600 mb-1">
-                Owner Father's Name (S/O)
-              </label>
-              <input
-                type="text"
-                placeholder="LATE SRI SATYA PRAKASH AGRAWAL"
-                value={formData.ownerFatherName}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, ownerFatherName: e.target.value }))
-                }
-                className="w-full px-3 py-2 text-sm uppercase bg-white border border-stone-300 rounded-md focus:outline-none focus:ring-1 focus:ring-stone-800 focus:border-stone-800"
-              />
+              <div>
+                <label className="block text-xs font-medium text-stone-600 mb-1">
+                  Property Address (IN ...)
+                </label>
+                <input
+                  type="text"
+                  placeholder="BUXIPUR SHER KOTHI, GORAKHPUR"
+                  value={formData.propertyAddress}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, propertyAddress: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 text-base sm:text-sm uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-stone-600 mb-1">
+                  Owner Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="SRI KIRTI AGRAWAL"
+                  value={formData.ownerName}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, ownerName: e.target.value }))}
+                  className="w-full px-3 py-2.5 text-base sm:text-sm uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-stone-600 mb-1">
+                  Owner Father's Name (S/O)
+                </label>
+                <input
+                  type="text"
+                  placeholder="LATE SRI SATYA PRAKASH AGRAWAL"
+                  value={formData.ownerFatherName}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, ownerFatherName: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 text-base sm:text-sm uppercase bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="pt-4 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <button
-              type="submit"
-              className="flex items-center gap-2 px-5 py-2.5 bg-stone-900 hover:bg-black text-white text-sm font-semibold rounded-md shadow transition-colors cursor-pointer"
-            >
-              <Eye className="w-4 h-4" />
-              <span>Preview Receipt</span>
-            </button>
+        {/* Action Buttons (Desktop inline + Mobile friendly container) */}
+        <div className="pt-4 border-t border-stone-200">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5">
+              <button
+                type="submit"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-stone-900 hover:bg-black active:bg-stone-950 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors cursor-pointer min-h-[48px] touch-manipulation"
+              >
+                <Eye className="w-4 h-4 shrink-0" />
+                <span>Preview</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={onSaveAndPrint}
-              disabled={loading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-md shadow transition-colors cursor-pointer disabled:opacity-50"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Save & Print (A4 Double Copy)</span>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={onSaveAndPrint}
+                disabled={loading}
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors cursor-pointer disabled:opacity-50 min-h-[48px] touch-manipulation"
+              >
+                <Printer className="w-4 h-4 shrink-0" />
+                <span className="truncate">Save & Print</span>
+              </button>
+            </div>
 
-          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onSaveOnly}
               disabled={loading}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-md border border-stone-300 transition-colors cursor-pointer"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-medium text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 rounded-xl border border-stone-300 transition-colors cursor-pointer min-h-[44px] touch-manipulation disabled:opacity-50"
             >
-              <Save className="w-3.5 h-3.5" />
+              <Save className="w-4 h-4 text-stone-600 shrink-0" />
               <span>Save to History</span>
             </button>
           </div>
