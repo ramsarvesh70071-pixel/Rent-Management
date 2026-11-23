@@ -377,7 +377,7 @@ export default function SettingsModal({
         <div className="mt-6 pt-5 border-t border-stone-200">
           <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-stone-900 mb-3 flex items-center gap-1.5">
             <User className="w-4 h-4 text-stone-700" />
-            <span>Reset Owner Profile (Fallback)</span>
+            <span>Reset Owner Profile</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             <div>
