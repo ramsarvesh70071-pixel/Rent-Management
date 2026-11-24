@@ -389,7 +389,7 @@ export default function ReceiptForm({
                 type="date"
                 value={formData.receiptDate}
                 onChange={(e) => setFormData((prev) => ({ ...prev, receiptDate: e.target.value }))}
-                required
+                {/* required */}
                 className="w-full px-3 py-2.5 text-base sm:text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
               />
             </div>
