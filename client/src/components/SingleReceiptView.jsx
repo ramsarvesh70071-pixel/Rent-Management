@@ -39,7 +39,7 @@ export default function SingleReceiptView({
         </div>
         <div className="w-1/2 sm:w-1/3 text-right">
           <span>DATE </span>
-          <span className="tracking-wider">{displayDate}</span>
+          <span className="inline-block border-b border-black w-28 sm:w-32 ml-1 align-baseline">&nbsp;</span>
         </div>
       </div>
 
