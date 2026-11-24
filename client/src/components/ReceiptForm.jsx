@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { numberToWords } from '../utils/numberToWords';
-import { getTodayISODate, getCurrentMonthYear, ALL_MONTHS } from '../utils/formatDate';
+import { getCurrentMonthYear, ALL_MONTHS } from '../utils/formatDate';
 import {
   Eye,
   Printer,
@@ -310,7 +310,7 @@ export default function ReceiptForm({
             2. Payment & Date Details
           </label>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {/* Rent Amount */}
             <div>
               <label className="block text-xs font-medium text-stone-600 mb-1">
@@ -369,10 +369,12 @@ export default function ReceiptForm({
               </select>
             </div>
 
-            {/* Receipt Date */}
+            {/* Receipt Date - kept commented so it does not appear on the page.
+                Uncomment this block whenever you want to show the date field again.
+
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-medium text-stone-600">
+                <label className="block text-xs font-medium text-stone-600 mb-1">
                   Receipt Date <span className="text-rose-500">*</span>
                 </label>
                 <button
@@ -385,52 +387,52 @@ export default function ReceiptForm({
                   Today
                 </button>
               </div>
-              
-              {/* <input
+              <input
                 type="date"
                 value={formData.receiptDate}
                 onChange={(e) => setFormData((prev) => ({ ...prev, receiptDate: e.target.value }))}
                 required
                 className="w-full px-3 py-2.5 text-base sm:text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 min-h-[48px] touch-manipulation"
-              /> */}
+              />
             </div>
-          </div>
+            */}
 
-          {/* Amount in Words */}
-          <div className="mt-3.5">
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-medium text-stone-700 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Sum in Words (Automatic)</span>
-              </label>
-              <button
-                type="button"
-                onClick={() => {
-                  if (isEditingWords) {
-                    setFormData((prev) => ({ ...prev, amountInWords: numberToWords(prev.amount) }));
-                  }
-                  setIsEditingWords(!isEditingWords);
-                }}
-                className="text-xs text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-2.5 py-1 rounded-md cursor-pointer touch-manipulation min-h-[44px] flex items-center font-medium"
-              >
-                {isEditingWords ? 'Auto Convert' : 'Edit Manually'}
-              </button>
+            {/* Amount in Words */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-medium text-stone-700 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Sum in Words (Automatic)</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isEditingWords) {
+                      setFormData((prev) => ({ ...prev, amountInWords: numberToWords(prev.amount) }));
+                    }
+                    setIsEditingWords(!isEditingWords);
+                  }}
+                  className="text-xs text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 px-2.5 py-1 rounded-md cursor-pointer touch-manipulation min-h-[44px] flex items-center font-medium"
+                >
+                  {isEditingWords ? 'Auto Convert' : 'Edit Manually'}
+                </button>
+              </div>
+              <input
+                type="text"
+                value={formData.amountInWords}
+                readOnly={!isEditingWords}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, amountInWords: e.target.value.toUpperCase() }))
+                }
+                placeholder="e.g. SEVEN THOUSAND FIVE HUNDRED ONLY"
+                required
+                className={`w-full px-3 py-2.5 text-sm sm:text-base font-typewriter uppercase tracking-wide rounded-lg border min-h-[48px] touch-manipulation ${
+                  isEditingWords
+                    ? 'border-amber-400 bg-amber-50/20 focus:ring-2 focus:ring-amber-500 focus:outline-none'
+                    : 'border-stone-200 bg-stone-50 text-stone-800 select-all'
+                }`}
+              />
             </div>
-            <input
-              type="text"
-              value={formData.amountInWords}
-              readOnly={!isEditingWords}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, amountInWords: e.target.value.toUpperCase() }))
-              }
-              placeholder="e.g. SEVEN THOUSAND FIVE HUNDRED ONLY"
-              required
-              className={`w-full px-3 py-2.5 text-sm sm:text-base font-typewriter uppercase tracking-wide rounded-lg border min-h-[48px] touch-manipulation ${
-                isEditingWords
-                  ? 'border-amber-400 bg-amber-50/20 focus:ring-2 focus:ring-amber-500 focus:outline-none'
-                  : 'border-stone-200 bg-stone-50 text-stone-800 select-all'
-              }`}
-            />
           </div>
         </div>
 
